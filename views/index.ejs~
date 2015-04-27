@@ -1,0 +1,6 @@
+<% include header %>
+
+  <h1>Angela</h1>
+  <p>Welcome to Angela</p>
+
+<% include footer %>
