@@ -9,7 +9,7 @@ var routes = require('./routes/index');
 var users = require('./routes/user');
 
 var app = express();
-var server = http.createServer(app);
+var server_ = http.createServer(app);
 
 var io = require('socket.io')(server);
 
@@ -67,6 +67,7 @@ app.use(function(err, req, res, next) {
 var uuid = require('node-uuid');
 var registry = {};
 io.on('connection',function(socket){
+    console.log("Client connected")
     //Commands from web/mobile app
     socket.on('angela.client.command',function(data){
         //Quando mando un comando, gli assegno un uuid univoco
@@ -87,7 +88,7 @@ io.on('connection',function(socket){
     })
     socket.on('angela.terminal.output',function(data){
         console.log("A physical client returned this output ",data);
-        socket.emit(('angela.terminal.output',data) //Echoed to clients
+        socket.emit('angela.terminal.output',data) //Echoed to clients
     })
 })
 
