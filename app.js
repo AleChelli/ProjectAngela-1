@@ -11,8 +11,8 @@ var users = require('./routes/user');
 var app = express();
 var server = http.createServer(app);
 
-var io = require('socket.io')();
-io.listen(server);
+var io = require('socket.io')(server);
+
 app.set('socket',io)
 // view engine setup
 
@@ -73,18 +73,28 @@ io.on('connection',function(socket){
         //In questo modo quando mi arriva l'output vedo a quale comando corrisponde
         var cmd = {
             id : uuid.v4(),
-            cmd : data
-
+            cmd : data.cmd
+        }
+        console.log("The app sent a new command",cmd)
+        var fake_output = {
+            id : cmd.id,
+            output : '(Dummy response to command '+data.cmd+')'
         }
         registry[cmd.id] = cmd; 
-        console.log("Emitting this command ",cmd)
-        socket.emit('angela.server.command',cmd)
-
-
+        console.log("Emitting the following command to the device",cmd)
+        socket.emit('angela.client.command',cmd) //This is echoed to devices
+        socket.emit('angela.terminal.output',fake_output)//
     })
     socket.on('angela.terminal.output',function(data){
-        console.log("A client returned this output "+data);
+        console.log("A physical client returned this output ",data);
+        socket.emit(('angela.terminal.output',data) //Echoed to clients
     })
 })
 
-module.exports = app;
+app.set('port', process.env.PORT || 9999);
+
+var server = app.listen(app.get('port'), function() {
+  console.log('Express server listening on port ' + server.address().port);
+});
+
+io.listen(server);
