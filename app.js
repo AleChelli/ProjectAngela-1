@@ -64,6 +64,27 @@ app.use(function(err, req, res, next) {
         title: 'error'
     });
 });
+var uuid = require('node-uuid');
+var registry = {};
+io.on('connection',function(socket){
+    //Commands from web/mobile app
+    socket.on('angela.client.command',function(data){
+        //Quando mando un comando, gli assegno un uuid univoco
+        //In questo modo quando mi arriva l'output vedo a quale comando corrisponde
+        var cmd = {
+            id : uuid.v4(),
+            cmd : data
 
+        }
+        registry[cmd.id] = cmd; 
+        console.log("Emitting this command ",cmd)
+        socket.emit('angela.server.command',cmd)
+
+
+    })
+    socket.on('angela.terminal.output',function(data){
+        console.log("A client returned this output "+data);
+    })
+})
 
 module.exports = app;
