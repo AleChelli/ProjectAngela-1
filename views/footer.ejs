@@ -4,8 +4,10 @@
 <script type="text/javascript">
 var socket = io('http://apio04.cloudapp.net');
   socket.on('angela.terminal.output', function (data) {
-  	
-  	document.terminal.echo(data.output)
+  	if (data.error)
+  		document.terminal.echo(data.error)
+  	else
+  		document.terminal.echo(data.output)
    
   });
 $('#terminal').terminal(function(command, term) {
