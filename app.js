@@ -88,7 +88,7 @@ io.on('connection',function(socket){
     })
     socket.on('angela.terminal.output',function(data){
         console.log("A physical client returned this output ",data);
-        socket.emit('angela.terminal.output',data) //Echoed to clients
+        io.emit('angela.terminal.output',data) //Echoed to clients
     })
 })
 
